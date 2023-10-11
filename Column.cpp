@@ -1,34 +1,29 @@
 #include "Column.h"
 
 // Task 1
-Column::Column() : totalRows(0)
-{
+Column::Column() : totalRows(0) {
     this->rowHead = nullptr;
     this->next = nullptr;
     this->prev = nullptr;
 }
 
 // Task 2
-Column::Column(Column *prev) : totalRows(0)
-{
+Column::Column(Column *prev) : totalRows(0) {
     this->rowHead = nullptr;
     this->next = nullptr;
     this->prev = prev;
 }
 
 // Task 3
-Column::Column(const Column &c) : totalRows(c.totalRows)
-{
+Column::Column(const Column &c) : totalRows(c.totalRows) {
     this->next = nullptr;
     this->prev = nullptr;
     this->rowHead = c.rowHead != nullptr ? new Cell(*c.rowHead) : nullptr;
 }
 
 // Task 4
-Column::~Column()
-{
-    while (rowHead != nullptr)
-    {
+Column::~Column() {
+    while (rowHead != nullptr) {
         Cell *temp = rowHead;
         rowHead = rowHead->next;
         delete temp;
@@ -36,16 +31,13 @@ Column::~Column()
 }
 
 // Task 5
-Cell *Column::findCell(int rowNum)
-{
-    if (rowNum >= totalRows)
-    {
+Cell *Column::findCell(int rowNum) {
+    if (rowNum >= totalRows) {
         return nullptr;
     }
     Cell *current = rowHead;
     int i = 0;
-    while (i < rowNum)
-    {
+    while (i < rowNum) {
         current = current->next;
         i++;
     }
@@ -53,23 +45,18 @@ Cell *Column::findCell(int rowNum)
 }
 
 // Task 6
-void Column::modifyCell(int rowNum, const string &value)
-{
-    if (rowNum < totalRows)
-    {
+void Column::modifyCell(int rowNum, const string &value) {
+    if (rowNum < totalRows) {
         Cell *cell = findCell(rowNum);
         cell->value = value;
-    }
-    else
-    {
+    } else {
         Cell *current = rowHead;
-        if (current == nullptr){
+        if (current == nullptr) {
             current = new Cell();
+            rowHead = current;
         }
-        for (int i = 0; i < rowNum; i++)
-        {
-            if (i + 1 >= totalRows)
-            {
+        for (int i = 0; i < rowNum; i++) {
+            if (i + 1 >= totalRows) {
                 // append new at the end
                 Cell *newCell = new Cell();
                 // TODO nullptr may cause edge case
@@ -86,10 +73,8 @@ void Column::modifyCell(int rowNum, const string &value)
 }
 
 // Task 7
-void Column::clearCell(int rowNum)
-{
-    if (rowNum >= totalRows)
-    {
+void Column::clearCell(int rowNum) {
+    if (rowNum >= totalRows) {
         return;
     }
     // Cell to be cleared is not the last cell in the column (rowNum < totalRows - 1): sets the value of the found cell to an empty string.
@@ -97,11 +82,9 @@ void Column::clearCell(int rowNum)
 }
 
 // Task 8
-void Column::clearAllCells()
-{
+void Column::clearAllCells() {
     // do while loop or while
-    while (rowHead != nullptr)
-    {
+    while (rowHead != nullptr) {
         Cell *temp = rowHead;
         rowHead = rowHead->next;
         delete temp;
@@ -111,8 +94,7 @@ void Column::clearAllCells()
 }
 
 // ---------------------- provided functions: DO NOT MODIFY --------------------------
-void Column::printColumn() const
-{
+void Column::printColumn() const {
     // string styles
     string line(12, '-');
     string doubleline(12, '=');
@@ -130,8 +112,7 @@ void Column::printColumn() const
 
     // table body (row by row)
     Cell *current = rowHead;
-    for (int i = 0; i < totalRows; ++i)
-    {
+    for (int i = 0; i < totalRows; ++i) {
         cout << " " << std::setw(10) << "row " + to_string(i) + " "
              << " ";
         cout << "|" << std::setw(10) << current->value << "|" << endl;
