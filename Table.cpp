@@ -1,17 +1,14 @@
 #include "Table.h"
 
 // Task 9
-Table::Table()
-{
+Table::Table() {
     this->totalColumns = 0;
     this->columnHead = nullptr;
 }
 
 // Task 10
-Table::~Table()
-{
-    while (columnHead != nullptr)
-    {
+Table::~Table() {
+    while (columnHead != nullptr) {
         Column *temp = columnHead;
         columnHead = columnHead->next;
         delete temp;
@@ -19,16 +16,13 @@ Table::~Table()
 }
 
 // Task 11
-Column *Table::findColumn(int colNum) const
-{
-    if (colNum + 1 > totalColumns)
-    {
+Column *Table::findColumn(int colNum) const {
+    if (colNum + 1 > totalColumns) {
         return nullptr;
     }
     Column *current = columnHead;
     int i = 0;
-    while (i < colNum)
-    {
+    while (i < colNum) {
         current = current->next;
         i++;
     }
@@ -36,30 +30,22 @@ Column *Table::findColumn(int colNum) const
 }
 
 // Task 12
-void Table::copyInsertColumn(int fromColNum, int toColNum)
-{
+void Table::copyInsertColumn(int fromColNum, int toColNum) {
     // Handle the first scenario (source column not created)
-    if (fromColNum >= totalColumns)
-    {
+    if (fromColNum >= totalColumns) {
         // Create an empty column
         Column *newColumn = new Column();
 
         // Insert at the specified position (toColNum)
-        if (toColNum == 0)
-        {
+        if (toColNum == 0) {
             newColumn->next = columnHead;
             columnHead = newColumn;
-        }
-        else
-        {
+        } else {
             Column *prevColumn = findColumn(toColNum - 1);
-            if (prevColumn)
-            {
+            if (prevColumn) {
                 newColumn->next = prevColumn->next;
                 prevColumn->next = newColumn;
-            }
-            else
-            {
+            } else {
                 // Invalid 'toColNum', do nothing
                 delete newColumn;
                 return;
@@ -67,19 +53,15 @@ void Table::copyInsertColumn(int fromColNum, int toColNum)
         }
 
         totalColumns++;
-    }
-    else
-    {
+    } else {
         // Handle the second scenario (empty source column and toColNum not created)
-        if (fromColNum >= 0 && toColNum >= totalColumns)
-        {
+        if (fromColNum >= 0 && toColNum >= totalColumns) {
             return;
         }
 
         // Find the source column
         Column *sourceColumn = findColumn(fromColNum);
-        if (!sourceColumn)
-        {
+        if (!sourceColumn) {
             return; // Source column not found
         }
 
@@ -87,34 +69,24 @@ void Table::copyInsertColumn(int fromColNum, int toColNum)
         Column *newColumn = new Column(*sourceColumn);
 
         // Handle the third and fourth scenarios
-        if (toColNum < totalColumns)
-        {
+        if (toColNum < totalColumns) {
             // Insert in the middle of existing columns
-            if (toColNum == 0)
-            {
+            if (toColNum == 0) {
                 newColumn->next = columnHead;
                 columnHead = newColumn;
-            }
-            else
-            {
+            } else {
                 Column *prevColumn = findColumn(toColNum - 1);
-                if (prevColumn)
-                {
+                if (prevColumn) {
                     newColumn->next = prevColumn->next;
                     prevColumn->next = newColumn;
                 }
             }
             totalColumns++;
-        }
-        else
-        {
+        } else {
             // Insert at or beyond total columns
-            if (totalColumns == 0)
-            {
+            if (totalColumns == 0) {
                 columnHead = newColumn;
-            }
-            else
-            {
+            } else {
                 Column *lastColumn = findColumn(totalColumns - 1);
                 lastColumn->next = newColumn;
             }
@@ -124,49 +96,39 @@ void Table::copyInsertColumn(int fromColNum, int toColNum)
 }
 
 // Task 13
-void Table::deleteColumn(int colNum)
-{
-    if (colNum >= totalColumns)
-    {
+void Table::deleteColumn(int colNum) {
+    if (colNum >= totalColumns) {
         return; // Column does not exist
     }
 
     // Handle the case where colNum is 0 (deleting the first column)
-    if (colNum == 0)
-    {
+    if (colNum == 0) {
         Column *temp = columnHead;
         columnHead = columnHead->next;
         delete temp;
         totalColumns--;
-    }
-    else
-    {
+    } else {
         Column *prevColumn = findColumn(colNum - 1);
-        if (!prevColumn)
-        {
+        if (!prevColumn) {
             return; // Invalid column number
         }
 
         Column *columnToDelete = prevColumn->next;
-        if (columnToDelete)
-        {
+        if (columnToDelete) {
             prevColumn->next = columnToDelete->next;
             delete columnToDelete;
             totalColumns--;
 
             // Check if the deleted column is the last one, and if it's empty
-            if (colNum == totalColumns - 1)
-            {
+            if (colNum == totalColumns - 1) {
                 // Find the new last column
                 Column *lastColumn = prevColumn;
-                while (lastColumn->next)
-                {
+                while (lastColumn->next) {
                     lastColumn = lastColumn->next;
                 }
 
                 // Check if the new last column is empty and delete recursively
-                while (lastColumn && (!lastColumn->getTotalRows()) == 0)
-                {
+                while (lastColumn && (!lastColumn->getTotalRows()) == 0) {
                     // Delete the last empty column
                     Column *prevLastColumn = findColumn(totalColumns - 2);
                     prevLastColumn->next = nullptr;
@@ -180,39 +142,30 @@ void Table::deleteColumn(int colNum)
 }
 
 // Task 14
-Cell *Table::findCell(int colNum, int rowNum) const
-{
+Cell *Table::findCell(int colNum, int rowNum) const {
     Column *col = findColumn(colNum);
-    if (col == nullptr)
-    {
+    if (col == nullptr) {
         return nullptr;
     }
     return col->findCell(rowNum);
 }
 
 // Task 15
-void Table::modifyCell(int colNum, int rowNum, const string &value)
-{
-    if (colNum < totalColumns)
-    {
+void Table::modifyCell(int colNum, int rowNum, const string &value) {
+    if (colNum < totalColumns) {
         Column *col = findColumn(colNum);
-        if (col == nullptr)
-        {
+        if (col == nullptr) {
             return;
         }
         col->modifyCell(rowNum, value);
-    }
-    else
-    {
+    } else {
         Column *current = columnHead;
         if (columnHead == nullptr) {
             current = new Column();
             columnHead = current;
         }
-        for (int i = 0; i < colNum; i++)
-        {
-            if (i + 1 >= totalColumns)
-            {
+        for (int i = 0; i < colNum; i++) {
+            if (i + 1 >= totalColumns) {
                 Column *newCol = new Column();
                 current->next = newCol;
                 newCol->prev = current;
@@ -226,15 +179,13 @@ void Table::modifyCell(int colNum, int rowNum, const string &value)
 }
 
 // Task 16
-void Table::clearCell(int colNum, int rowNum)
-{
+void Table::clearCell(int colNum, int rowNum) {
     Cell *cell = findCell(colNum, rowNum);
     if (cell == nullptr) //Cell does not exist
     {
         return;
     }
-    if (colNum < totalColumns)
-    {
+    if (colNum < totalColumns) {
         Column *col = findColumn(colNum);
         if (col == nullptr) // Column does not exist
         {
@@ -242,20 +193,20 @@ void Table::clearCell(int colNum, int rowNum)
         }
         col->clearCell(rowNum);
         // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
-        if (colNum + 1 == totalColumns) {
+        if (colNum == totalColumns - 1) {
             // Check if the previous Column is also empty
-            if (colNum == 0) {
-                // If this is the first column, check if it's empty
-                if (col->getTotalRows() == 0) {
-                    // Recursive deletion of empty columns
-                    deleteColumn(colNum);
-                }
-            } else {
-                // If it's not the first column, check the previous column
-                Column *prevCol = findColumn(colNum - 1);
-                if (prevCol && prevCol->getTotalRows() == 0) {
-                    // Recursive deletion of empty columns
-                    deleteColumn(colNum - 1);
+            Column *current = col;
+            int currentColNum = colNum;
+            while (current->getTotalRows() == 0) {
+                // if clear cell is 0 row, need to delete
+                deleteColumn(currentColNum);
+                //check the previous column
+                Column *prevCol = currentColNum != 0 ? findColumn(currentColNum-1) : nullptr;
+                if (prevCol != nullptr) {
+                    currentColNum--;
+                    current = prevCol;
+                } else if (currentColNum ==0 ){
+                    break;
                 }
             }
         }
@@ -263,16 +214,13 @@ void Table::clearCell(int colNum, int rowNum)
 }
 
 // ---------------------- provided functions: DO NOT MODIFY --------------------------
-void Table::printTable() const
-{
+void Table::printTable() const {
 
     // find the max number of rows
     int maxRows = 0;
     Column *currCol = columnHead;
-    while (currCol != nullptr)
-    {
-        if (currCol->getTotalRows() > maxRows)
-        {
+    while (currCol != nullptr) {
+        if (currCol->getTotalRows() > maxRows) {
             maxRows = currCol->getTotalRows();
         }
         currCol = currCol->next;
@@ -291,8 +239,7 @@ void Table::printTable() const
     cout << headerline << endl;
     cout << " " << std::setw(10) << ""
          << "|";
-    for (int i = 0; i < totalColumns; ++i)
-    {
+    for (int i = 0; i < totalColumns; ++i) {
         cout << "|" << std::setw(10) << "column " + to_string(i) + " "
              << "|";
     }
@@ -301,25 +248,20 @@ void Table::printTable() const
 
     // print table body (row by row)
     string hline;
-    for (int i = 0; i < maxRows; ++i)
-    {
+    for (int i = 0; i < maxRows; ++i) {
         hline = doubleline;
         cout << " " << std::setw(10) << "row " + to_string(i) + "  "
              << " ";
 
         currCol = columnHead;
 
-        while (currCol != nullptr)
-        {
+        while (currCol != nullptr) {
             Cell *currCell = currCol->findCell(i);
-            if (currCell == nullptr)
-            {
+            if (currCell == nullptr) {
                 hline += space;
                 cout << " " << std::setw(10) << ""
                      << " ";
-            }
-            else
-            {
+            } else {
                 hline += line;
                 cout << "|" << std::setw(10) << currCell->value << "|";
             }
