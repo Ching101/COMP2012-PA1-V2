@@ -205,6 +205,10 @@ void Table::modifyCell(int colNum, int rowNum, const string &value)
     else
     {
         Column *current = columnHead;
+        if (columnHead == nullptr) {
+            current = new Column();
+            columnHead = current;
+        }
         for (int i = 0; i < colNum; i++)
         {
             if (i + 1 >= totalColumns)
