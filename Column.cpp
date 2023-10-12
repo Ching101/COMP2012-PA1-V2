@@ -26,6 +26,7 @@ Column::~Column() {
     while (rowHead != nullptr) {
         Cell *temp = rowHead;
         rowHead = rowHead->next;
+        temp = nullptr;
         delete temp;
     }
 }
@@ -74,11 +75,28 @@ void Column::modifyCell(int rowNum, const string &value) {
 
 // Task 7
 void Column::clearCell(int rowNum) {
-    if (rowNum >= totalRows) {
+    if (rowNum >= totalRows) { // 1: Requested Cell does not exist in the column
         return;
     }
     // Cell to be cleared is not the last cell in the column (rowNum < totalRows - 1): sets the value of the found cell to an empty string.
     // Cell to be cleared is the last cell in the column (rowNum == totalRows - 1): after deleting the last cell, the function removes any unnecessary cells from the end of the column. It iteratively deletes cells as long as their values remain empty and there are more cells to delete.
+
+    Cell *cellToClear = findCell(rowNum);
+
+    if (rowNum < totalRows - 1) {
+        // 2: Cell to be cleared is not the last cell in the column
+        cellToClear->value = "";
+    } else {
+        // 3: Cell to be cleared is the last cell in the column
+        delete cellToClear;
+        totalRows--;
+        // Iteratively delete empty cells from the end of the column
+        while (rowHead != nullptr && rowHead->next != nullptr && rowHead->next->value.empty()) {
+            Cell *temp = rowHead->next;
+            rowHead->next = nullptr;
+            delete temp;
+        }
+    }
 }
 
 // Task 8

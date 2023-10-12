@@ -225,21 +225,35 @@ void Table::modifyCell(int colNum, int rowNum, const string &value)
 void Table::clearCell(int colNum, int rowNum)
 {
     Cell *cell = findCell(colNum, rowNum);
-    if (cell == nullptr)
+    if (cell == nullptr) //Cell does not exist
     {
         return;
     }
     if (colNum < totalColumns)
     {
         Column *col = findColumn(colNum);
-        if (col == nullptr)
+        if (col == nullptr) // Column does not exist
         {
             return;
         }
         col->clearCell(rowNum);
-        if (colNum + 1 == totalColumns)
-        {
-            // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
+        // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
+        if (colNum + 1 == totalColumns) {
+            // Check if the previous Column is also empty
+            if (colNum == 0) {
+                // If this is the first column, check if it's empty
+                if (col->getTotalRows() == 0) {
+                    // Recursive deletion of empty columns
+                    deleteColumn(colNum);
+                }
+            } else {
+                // If it's not the first column, check the previous column
+                Column *prevCol = findColumn(colNum - 1);
+                if (prevCol && prevCol->getTotalRows() == 0) {
+                    // Recursive deletion of empty columns
+                    deleteColumn(colNum - 1);
+                }
+            }
         }
     }
 }
