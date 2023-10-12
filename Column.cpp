@@ -116,14 +116,6 @@ void Column::clearCell(int rowNum) {
         Cell *prevCellToClear = findCell(rowNum-1);
         prevCellToClear->next = nullptr;
         clearCell(rowNum -1);
-//        delete cellToClear;
-//        totalRows--;
-//        // Iteratively delete empty cells from the end of the column
-//        while (rowHead != nullptr && rowHead->next != nullptr && rowHead->next->value.empty()) {
-//            Cell *temp = rowHead->next;
-//            rowHead->next = nullptr;
-//            delete temp;
-//        }
     }
 }
 
