@@ -194,11 +194,11 @@ void Table::clearCell(int colNum, int rowNum) {
         col->clearCell(rowNum);
         // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
         if (colNum == totalColumns - 1) {
-            // Check if the previous Column is also empty
             Column *current = col;
             int currentColNum = colNum;
+            // if after clear cell returns 0 row, need to delete
+            // Check if the previous Column is also empty
             while (current->getTotalRows() == 0 && currentColNum >=0) {
-                // if clear cell is 0 row, need to delete
                 deleteColumn(currentColNum);
                 //check the previous column
                 Column *prevCol = currentColNum != 0 ? findColumn(currentColNum-1) : nullptr;
