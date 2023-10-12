@@ -197,17 +197,15 @@ void Table::clearCell(int colNum, int rowNum) {
             // Check if the previous Column is also empty
             Column *current = col;
             int currentColNum = colNum;
-            while (current->getTotalRows() == 0) {
+            while (current->getTotalRows() == 0 && currentColNum >=0) {
                 // if clear cell is 0 row, need to delete
                 deleteColumn(currentColNum);
                 //check the previous column
                 Column *prevCol = currentColNum != 0 ? findColumn(currentColNum-1) : nullptr;
                 if (prevCol != nullptr) {
-                    currentColNum--;
                     current = prevCol;
-                } else if (currentColNum ==0 ){
-                    break;
                 }
+                currentColNum--;
             }
         }
     }
