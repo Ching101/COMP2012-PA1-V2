@@ -114,10 +114,13 @@ void Column::clearCell(int rowNum) {
     } else if (rowNum == totalRows -1 && rowNum >=0){
         // 3: Cell to be cleared is the last cell in the column
         totalRows--;
-        delete cellToClear;
+        cellToClear = nullptr;
         Cell *prevCellToClear = findCell(rowNum-1);
-        if (prevCellToClear->value.empty()) {
-            prevCellToClear->next = nullptr;
+        Cell *tmp = prevCellToClear;
+        if (tmp == nullptr || tmp->value.empty()) {
+            tmp = tmp->next;
+            tmp = nullptr;
+            delete tmp;
             clearCell(rowNum -1);
         }
     }
