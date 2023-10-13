@@ -146,8 +146,8 @@ void Table::deleteColumn(int colNum) {
                     lastColumn = prevLastColumn;
                     currentTotalColum--;
                 }
-                totalColumns = currentTotalColum;
             }
+            totalColumns = currentTotalColum;
         }
     }
 }
