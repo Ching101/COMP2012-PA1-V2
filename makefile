@@ -1,5 +1,5 @@
 # Remove the '#' in line 2 if you want to check for memory leaks
-CPPFLAGS = -std=c++11 -g #-fsanitize=address,leak,undefined
+CPPFLAGS = -std=c++11 -g -fsanitize=address,leak,undefined
 SRCS = main.cpp main_test.cpp Column.cpp Table.cpp
 OBJS = $(SRCS:.cpp=.o)
 

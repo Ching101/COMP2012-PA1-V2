@@ -46,12 +46,13 @@ Column::Column(const Column &c) : totalRows(c.totalRows) {
 
 // Task 4
 Column::~Column() {
-    while (rowHead != nullptr) {
-        Cell *temp = rowHead;
-        rowHead = rowHead->next;
-        temp = nullptr;
-        delete temp;
-    }
+//    while (rowHead != nullptr) {
+//        Cell *temp = rowHead;
+//        rowHead = rowHead->next;
+//        temp = nullptr;
+//        delete temp;
+//    }
+    clearAllCells();
 }
 
 // Task 5
@@ -81,14 +82,15 @@ void Column::modifyCell(int rowNum, const string &value) {
         }
         for (int i = 0; i < rowNum; i++) {
             if (i + 1 >= totalRows) {
-                // append new at the end
+                // Append new cell at the end
                 Cell *newCell = new Cell();
-                // TODO nullptr may cause edge case
                 newCell->value = "";
                 current->next = newCell;
                 newCell->prev = current;
+                current = newCell;
+            } else {
+                current = current->next;
             }
-            current = current->next;
         }
         // last row
         current->value = value;
@@ -127,6 +129,7 @@ void Column::clearAllCells() {
     while (rowHead != nullptr) {
         Cell *temp = rowHead;
         rowHead = rowHead->next;
+        temp = nullptr;
         delete temp;
     }
     totalRows = 0;

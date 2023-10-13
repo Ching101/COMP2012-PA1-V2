@@ -1,0 +1,8 @@
+modifyCell(0, "a")
+modifyCell(1, "b")
+clearAllCells()
+totalRows: 0
+========================
+            |   column |
+========================
+
