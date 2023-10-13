@@ -126,10 +126,12 @@ void Table::deleteColumn(int colNum) {
         if (columnToDelete) {
             prevColumn->next = columnToDelete->next;
             delete columnToDelete;
-            totalColumns--;
+            int originalTotalColumn = totalColumns;
+            int currentTotalColum = totalColumns;
+            currentTotalColum--;
 
             // Check if the deleted column is the last one, and if it's empty
-            if (colNum == totalColumns - 1) {
+            if (colNum == originalTotalColumn - 1) {
                 // Find the new last column
                 Column *lastColumn = prevColumn;
                 while (lastColumn->next) {
@@ -137,14 +139,14 @@ void Table::deleteColumn(int colNum) {
                 }
 
                 // Check if the new last column is empty and delete recursively
-                while (lastColumn && (!lastColumn->getTotalRows()) == 0) {
+                while (!lastColumn->getRowHead() && !lastColumn->getTotalRows()) {
                     // Delete the last empty column
-                    Column *prevLastColumn = findColumn(totalColumns - 2);
+                    Column *prevLastColumn = findColumn(currentTotalColum - 2);
                     prevLastColumn->next = nullptr;
-                    delete lastColumn;
                     lastColumn = prevLastColumn;
-                    totalColumns--;
+                    currentTotalColum--;
                 }
+                totalColumns = currentTotalColum;
             }
         }
     }
