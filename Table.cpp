@@ -59,7 +59,7 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
         // Find the source column
         // Handle the second scenario (empty source column and toColNum not created)
         Column *sourceColumn = findColumn(fromColNum);
-        if (toColNum >= totalColumns && (sourceColumn == nullptr || sourceColumn->getRowHead() == nullptr)) {
+        if (toColNum >= totalColumns && (sourceColumn == nullptr || sourceColumn->getTotalRows() == 0)) {
             return; // Source column not found
         }
 
