@@ -54,14 +54,12 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
 
         totalColumns++;
     } else {
-        // Handle the second scenario (empty source column and toColNum not created)
-        if (fromColNum >= 0 && toColNum >= totalColumns) {
-            return;
-        }
+
 
         // Find the source column
+        // Handle the second scenario (empty source column and toColNum not created)
         Column *sourceColumn = findColumn(fromColNum);
-        if (!sourceColumn) {
+        if (toColNum >= totalColumns && (sourceColumn == nullptr || sourceColumn->getRowHead() == nullptr)) {
             return; // Source column not found
         }
 
@@ -84,11 +82,22 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
             totalColumns++;
         } else {
             // Insert at or beyond total columns
-            if (totalColumns == 0) {
-                columnHead = newColumn;
-            } else {
-                Column *lastColumn = findColumn(totalColumns - 1);
-                lastColumn->next = newColumn;
+            int currentColumnNum = totalColumns -1;
+            Column *blankColumn = new Column();
+            // necessary intermediate columns until the total number of columns in the table equals toColNum-1
+            Column *currentLastColumn = findColumn(currentColumnNum );
+            while (currentColumnNum < toColNum-1) {
+                if (totalColumns == 0) {
+                    //if b4 is empty table
+                    columnHead = newColumn;
+                } else {
+                    currentLastColumn->next = blankColumn;
+                    currentLastColumn= currentLastColumn->next;
+                }
+                currentColumnNum++;
+            }
+            if (currentColumnNum == toColNum -1) {
+                currentLastColumn->next = newColumn;
             }
             totalColumns = toColNum + 1;
         }
@@ -198,10 +207,10 @@ void Table::clearCell(int colNum, int rowNum) {
             int currentColNum = colNum;
             // if after clear cell returns 0 row, need to delete
             // Check if the previous Column is also empty
-            while (current->getTotalRows() == 0 && currentColNum >=0) {
+            while (current->getTotalRows() == 0 && currentColNum >= 0) {
                 deleteColumn(currentColNum);
                 //check the previous column
-                Column *prevCol = currentColNum != 0 ? findColumn(currentColNum-1) : nullptr;
+                Column *prevCol = currentColNum != 0 ? findColumn(currentColNum - 1) : nullptr;
                 if (prevCol != nullptr) {
                     current = prevCol;
                 }
