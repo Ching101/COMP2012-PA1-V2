@@ -128,7 +128,7 @@ void Column::clearAllCells() {
     // do while loop or while
     while (rowHead != nullptr) {
         Cell *temp = rowHead;
-        rowHead = rowHead->next;
+        temp = temp->next;
         temp = nullptr;
         delete temp;
     }
