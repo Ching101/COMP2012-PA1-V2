@@ -17,7 +17,7 @@ Table::~Table() {
 
 // Task 11
 Column *Table::findColumn(int colNum) const {
-    if (colNum + 1 > totalColumns) {
+    if (colNum < 0 || colNum + 1 > totalColumns) {
         return nullptr;
     }
     Column *current = columnHead;
@@ -82,21 +82,21 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
             totalColumns++;
         } else {
             // Insert at or beyond total columns
-            int currentColumnNum = totalColumns -1;
+            int currentColumnNum = totalColumns - 1;
             Column *blankColumn = new Column();
             // necessary intermediate columns until the total number of columns in the table equals toColNum-1
-            Column *currentLastColumn = findColumn(currentColumnNum );
-            while (currentColumnNum < toColNum-1) {
+            Column *currentLastColumn = findColumn(currentColumnNum);
+            while (currentColumnNum < toColNum - 1) {
                 if (totalColumns == 0) {
                     //if b4 is empty table
                     columnHead = newColumn;
                 } else {
                     currentLastColumn->next = blankColumn;
-                    currentLastColumn= currentLastColumn->next;
+                    currentLastColumn = currentLastColumn->next;
                 }
                 currentColumnNum++;
             }
-            if (currentColumnNum == toColNum -1) {
+            if (currentColumnNum == toColNum - 1) {
                 currentLastColumn->next = newColumn;
             }
             totalColumns = toColNum + 1;
@@ -139,12 +139,18 @@ void Table::deleteColumn(int colNum) {
                 }
 
                 // Check if the new last column is empty and delete recursively
-                while (!lastColumn->getRowHead() && !lastColumn->getTotalRows()) {
+                while (currentTotalColum > 0 && lastColumn != nullptr && !lastColumn->getRowHead() &&
+                       !lastColumn->getTotalRows()) {
                     // Delete the last empty column
                     Column *prevLastColumn = findColumn(currentTotalColum - 2);
-                    prevLastColumn->next = nullptr;
-                    lastColumn = prevLastColumn;
-                    currentTotalColum--;
+                    if (currentTotalColum == 1) {
+                        lastColumn = nullptr;
+                        currentTotalColum--;
+                    } else {
+                        prevLastColumn->next = nullptr;
+                        lastColumn = prevLastColumn;
+                        currentTotalColum--;
+                    }
                 }
             }
             totalColumns = currentTotalColum;
