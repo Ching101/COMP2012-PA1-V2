@@ -111,51 +111,72 @@ void Table::deleteColumn(int colNum) {
     }
 
     // Handle the case where colNum is 0 (deleting the first column)
+//    if (colNum == 0) {
+//        Column *temp = columnHead;
+//        columnHead = columnHead->next;
+//        delete temp;
+//        totalColumns--;
+//    } else {
+//        Column *prevColumn = findColumn(colNum - 1);
+//        if (!prevColumn) {
+//            return; // Invalid column number
+//        }
+//
+//        Column *columnToDelete = prevColumn->next;
+//        if (columnToDelete) {
+//            prevColumn->next = columnToDelete->next;
+//            delete columnToDelete;
+//            int originalTotalColumn = totalColumns;
+//            int currentTotalColum = totalColumns;
+//            currentTotalColum--;
+//
+//            // Check if the deleted column is the last one, and if it's empty
+//            if (colNum == originalTotalColumn - 1) {
+//                // Find the new last column
+//                Column *lastColumn = prevColumn;
+//                while (lastColumn->next) {
+//                    lastColumn = lastColumn->next;
+//                }
+//
+//                // Check if the new last column is empty and delete recursively
+//                while (currentTotalColum > 0 && lastColumn != nullptr && !lastColumn->getRowHead() &&
+//                       !lastColumn->getTotalRows()) {
+//                    // Delete the last empty column
+//                    Column *prevLastColumn = findColumn(currentTotalColum - 2);
+//                    if (currentTotalColum == 1) {
+//                        lastColumn = nullptr;
+//                        currentTotalColum--;
+//                    } else {
+//                        prevLastColumn->next = nullptr;
+//                        lastColumn = prevLastColumn;
+//                        currentTotalColum--;
+//                    }
+//                }
+//            }
+//            totalColumns = currentTotalColum;
+//        }
+//    }
+    if (colNum >= totalColumns) {
+        return; // Column does not exist
+    }
+
     if (colNum == 0) {
         Column *temp = columnHead;
         columnHead = columnHead->next;
         delete temp;
-        totalColumns--;
     } else {
         Column *prevColumn = findColumn(colNum - 1);
-        if (!prevColumn) {
-            return; // Invalid column number
-        }
-
-        Column *columnToDelete = prevColumn->next;
-        if (columnToDelete) {
-            prevColumn->next = columnToDelete->next;
-            delete columnToDelete;
-            int originalTotalColumn = totalColumns;
-            int currentTotalColum = totalColumns;
-            currentTotalColum--;
-
-            // Check if the deleted column is the last one, and if it's empty
-            if (colNum == originalTotalColumn - 1) {
-                // Find the new last column
-                Column *lastColumn = prevColumn;
-                while (lastColumn->next) {
-                    lastColumn = lastColumn->next;
-                }
-
-                // Check if the new last column is empty and delete recursively
-                while (currentTotalColum > 0 && lastColumn != nullptr && !lastColumn->getRowHead() &&
-                       !lastColumn->getTotalRows()) {
-                    // Delete the last empty column
-                    Column *prevLastColumn = findColumn(currentTotalColum - 2);
-                    if (currentTotalColum == 1) {
-                        lastColumn = nullptr;
-                        currentTotalColum--;
-                    } else {
-                        prevLastColumn->next = nullptr;
-                        lastColumn = prevLastColumn;
-                        currentTotalColum--;
-                    }
-                }
+        if (prevColumn) {
+            Column *columnToDelete = prevColumn->next;
+            if (columnToDelete) {
+                prevColumn->next = columnToDelete->next;
+                delete columnToDelete;
             }
-            totalColumns = currentTotalColum;
         }
     }
+
+    // Update the totalColumns after deleting the column
+    totalColumns--;
 }
 
 // Task 14
@@ -196,39 +217,77 @@ void Table::modifyCell(int colNum, int rowNum, const string &value) {
 }
 
 // Task 16
+//void Table::clearCell(int colNum, int rowNum) {
+//    Cell *cell = findCell(colNum, rowNum);
+//    if (cell == nullptr) //Cell does not exist
+//    {
+//        return;
+//    }
+//    if (colNum < totalColumns) {
+//        Column *col = findColumn(colNum);
+//        if (col == nullptr) // Column does not exist
+//        {
+//            return;
+//        }
+//        col->clearCell(rowNum);
+//        // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
+//        if (colNum == totalColumns - 1) {
+//            Column *current = col;
+//            int currentColNum = colNum;
+//            // if after clear cell returns 0 row, need to delete
+//            // Check if the previous Column is also empty
+//            int totalRows = col->getTotalRows();
+//            while (totalRows == 0 && currentColNum >= 0) {
+//                deleteColumn(currentColNum);
+//                //check the previous column
+//                Column *prevCol = currentColNum != 0 ? findColumn(currentColNum - 1) : nullptr;
+//                if (prevCol != nullptr) {
+//                    current = prevCol;
+//                }
+//                currentColNum--;
+//                col = current;
+//                totalRows = col->getTotalRows();
+//            }
+//        }
+//    }
+//}
 void Table::clearCell(int colNum, int rowNum) {
     Cell *cell = findCell(colNum, rowNum);
-    if (cell == nullptr) //Cell does not exist
-    {
-        return;
+    if (cell == nullptr) {
+        return; // Cell does not exist
     }
+
     if (colNum < totalColumns) {
         Column *col = findColumn(colNum);
-        if (col == nullptr) // Column does not exist
-        {
-            return;
+        if (col == nullptr) {
+            return; // Column does not exist
         }
+
         col->clearCell(rowNum);
-        // the function also checks if the previous Column is also empty. If the previous Column is empty, a recursive deletion of empty columns
+
         if (colNum == totalColumns - 1) {
-            Column *current = col;
+            Column *prevCol = col;
             int currentColNum = colNum;
-            // if after clear cell returns 0 row, need to delete
-            // Check if the previous Column is also empty
             int totalRows = col->getTotalRows();
+
             while (totalRows == 0 && currentColNum >= 0) {
                 deleteColumn(currentColNum);
-                //check the previous column
-                Column *prevCol = currentColNum != 0 ? findColumn(currentColNum - 1) : nullptr;
+
+                prevCol = currentColNum != 0 ? findColumn(currentColNum - 1) : nullptr;
+
                 if (prevCol != nullptr) {
-                    current = prevCol;
+                    col = prevCol;
                 }
                 currentColNum--;
-                totalRows = col->getTotalRows();
+
+                if (currentColNum >= 0) {
+                    totalRows = col->getTotalRows();
+                }
             }
         }
     }
 }
+
 
 // ---------------------- provided functions: DO NOT MODIFY --------------------------
 void Table::printTable() const {
