@@ -215,7 +215,8 @@ void Table::clearCell(int colNum, int rowNum) {
             int currentColNum = colNum;
             // if after clear cell returns 0 row, need to delete
             // Check if the previous Column is also empty
-            while (current->getTotalRows() == 0 && currentColNum >= 0) {
+            int totalRows = col->getTotalRows();
+            while (totalRows == 0 && currentColNum >= 0) {
                 deleteColumn(currentColNum);
                 //check the previous column
                 Column *prevCol = currentColNum != 0 ? findColumn(currentColNum - 1) : nullptr;
@@ -223,6 +224,7 @@ void Table::clearCell(int colNum, int rowNum) {
                     current = prevCol;
                 }
                 currentColNum--;
+                totalRows = col->getTotalRows();
             }
         }
     }
