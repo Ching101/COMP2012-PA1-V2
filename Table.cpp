@@ -51,16 +51,12 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
                 return;
             }
         }
-
         totalColumns++;
     } else {
-
-
         // Find the source column
-        // Handle the second scenario (empty source column and toColNum not created)
         Column *sourceColumn = findColumn(fromColNum);
-        if (toColNum >= totalColumns && (sourceColumn == nullptr || sourceColumn->getTotalRows() == 0)) {
-            return; // Source column not found
+        if (sourceColumn == nullptr || toColNum > totalColumns) {
+            return; // Source column not found or invalid toColNum
         }
 
         // Create a new column by copying the source column
@@ -68,7 +64,6 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
 
         // Handle the third and fourth scenarios
         if (toColNum < totalColumns) {
-            // Insert in the middle of existing columns
             if (toColNum == 0) {
                 newColumn->next = columnHead;
                 columnHead = newColumn;
@@ -82,22 +77,16 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
             totalColumns++;
         } else {
             // Insert at or beyond total columns
-            int currentColumnNum = totalColumns - 1;
-            Column *blankColumn = new Column();
-            // necessary intermediate columns until the total number of columns in the table equals toColNum-1
-            Column *currentLastColumn = findColumn(currentColumnNum);
-            while (currentColumnNum < toColNum - 1) {
-                if (totalColumns == 0) {
-                    //if b4 is empty table
-                    columnHead = newColumn;
-                } else {
-                    currentLastColumn->next = blankColumn;
-                    currentLastColumn = currentLastColumn->next;
+            if (totalColumns == 0) {
+                // If inserting into an empty table
+                columnHead = newColumn;
+            } else {
+                // Insert beyond the current columns
+                Column *currentColumn = columnHead;
+                while (currentColumn->next != nullptr) {
+                    currentColumn = currentColumn->next;
                 }
-                currentColumnNum++;
-            }
-            if (currentColumnNum == toColNum - 1) {
-                currentLastColumn->next = newColumn;
+                currentColumn->next = newColumn;
             }
             totalColumns = toColNum + 1;
         }
