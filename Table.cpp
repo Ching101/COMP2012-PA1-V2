@@ -100,6 +100,7 @@ void Table::copyInsertColumn(int fromColNum, int toColNum) {
                 currentLastColumn->next = newColumn;
             }
             totalColumns = toColNum + 1;
+            delete blankColumn;
         }
     }
 }
