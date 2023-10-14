@@ -19,29 +19,35 @@ Column::Column(const Column &c) : totalRows(c.totalRows) {
     this->next = nullptr;
     this->prev = nullptr;
     if (c.rowHead != nullptr) {
-        //deep clone the cells
-        Cell *newCloneCellStart = new Cell();
-        Cell *temp = c.rowHead;
-        newCloneCellStart->value = c.rowHead->value;
-        // Set the 'next' value to null (the loop will fill this in).
-        newCloneCellStart->next = nullptr;
-        Cell *newCloneCell = newCloneCellStart;
-        temp = temp->next;
-        while (temp != nullptr) {
-            // Allocate new memory for a new 'Cell()'.
-            newCloneCell->next = new Cell();
-            // Point to this new 'Cell()'
-            newCloneCell = newCloneCell->next;
-            // Copy over the value.
-            newCloneCell->value = temp->value;
-            // By default set the 'Cell' to null.
-            newCloneCell->next = nullptr;
-            // Move along Column list.
-            temp = temp->next;
-        }
-        this->rowHead = newCloneCellStart;
-    }
+        // Initialize the rowHead of the current column with an empty cell
+        this->rowHead = new Cell();
+        Cell *currentCell = this->rowHead;
 
+        // Initialize the value of the first cell
+        currentCell->value = c.rowHead->value;
+
+        // Initialize the 'next' pointer for the first cell
+        currentCell->next = nullptr;
+
+        Cell *sourceCell = c.rowHead->next;
+
+        while (sourceCell != nullptr) {
+            // Create a new cell for the current column
+            currentCell->next = new Cell();
+            currentCell = currentCell->next;
+
+            // Copy the value from the source cell to the current cell
+            currentCell->value = sourceCell->value;
+
+            // Initialize the 'next' pointer for the current cell
+            currentCell->next = nullptr;
+
+            sourceCell = sourceCell->next;
+        }
+    } else {
+        // If the source column's rowHead is nullptr, set the current column's rowHead to nullptr as well
+        this->rowHead = nullptr;
+    }
 }
 
 // Task 4
@@ -111,17 +117,17 @@ void Column::clearCell(int rowNum) {
     if (rowNum < totalRows - 1) {
         // 2: Cell to be cleared is not the last cell in the column
         cellToClear->value = "";
-    } else if (rowNum == totalRows -1 && rowNum >=0){
+    } else if (rowNum == totalRows - 1 && rowNum >= 0) {
         // 3: Cell to be cleared is the last cell in the column
         totalRows--;
         cellToClear = nullptr;
-        Cell *prevCellToClear = findCell(rowNum-1);
+        Cell *prevCellToClear = findCell(rowNum - 1);
         Cell *tmp = prevCellToClear;
         if (tmp == nullptr || tmp->value.empty()) {
             tmp = tmp->next;
             tmp = nullptr;
             delete tmp;
-            clearCell(rowNum -1);
+            clearCell(rowNum - 1);
         }
     }
 //    if (rowNum >= totalRows) {
