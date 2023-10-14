@@ -100,80 +100,75 @@ void Column::modifyCell(int rowNum, const string &value) {
 
 // Task 7
 void Column::clearCell(int rowNum) {
-//    if (rowNum >= totalRows) { // 1: Requested Cell does not exist in the column
-//        return;
-//    }
-//    // Cell to be cleared is not the last cell in the column (rowNum < totalRows - 1): sets the value of the found cell to an empty string.
-//    // Cell to be cleared is the last cell in the column (rowNum == totalRows - 1): after deleting the last cell, the function removes any unnecessary cells from the end of the column. It iteratively deletes cells as long as their values remain empty and there are more cells to delete.
-//
-//    Cell *cellToClear = findCell(rowNum);
-//
-//    if (rowNum < totalRows - 1) {
-//        // 2: Cell to be cleared is not the last cell in the column
-//        cellToClear->value = "";
-//    } else if (rowNum == totalRows - 1 && rowNum >= 0) {
-//        // 3: Cell to be cleared is the last cell in the column
-//        totalRows--;
-//        delete cellToClear;
-//        Cell *prevCellToClear = findCell(rowNum - 1);
-//        if (prevCellToClear->value.empty()) {
-//            prevCellToClear->next = nullptr;
-//            clearCell(rowNum - 1);
-//        }
-//    }
     if (rowNum >= totalRows) { // 1: Requested Cell does not exist in the column
         return;
     }
+    // Cell to be cleared is not the last cell in the column (rowNum < totalRows - 1): sets the value of the found cell to an empty string.
+    // Cell to be cleared is the last cell in the column (rowNum == totalRows - 1): after deleting the last cell, the function removes any unnecessary cells from the end of the column. It iteratively deletes cells as long as their values remain empty and there are more cells to delete.
+
     Cell *cellToClear = findCell(rowNum);
-//    cellToClear->value = "";
-    // Cell to be cleared is not the last cell in the column
-    //logic 1
+
     if (rowNum < totalRows - 1) {
-//        Cell *cellToClear = findCell(rowNum);
+        // 2: Cell to be cleared is not the last cell in the column
         cellToClear->value = "";
-    } else if (rowNum == totalRows - 1 && rowNum >= 0) {
-        // Cell to be cleared is the last cell in the column
-//        Cell *cellToClear = findCell(rowNum);
+    } else if (rowNum == totalRows -1 && rowNum >=0){
+        // 3: Cell to be cleared is the last cell in the column
         totalRows--;
-
-        if (rowNum == 0) {
-            // If there's only one cell, just reset it
-            cellToClear->value = "";
-            cellToClear->next = nullptr;
-            cellToClear->prev = nullptr;
-            cellToClear = nullptr;
-            delete cellToClear;
-            rowHead = nullptr;
-        } else {
-            // Delete the last cell
-            delete cellToClear;
-            cellToClear = nullptr;
-
-            // Update the previous cell's 'next' pointer
-            Cell *prevCellToClear = findCell(rowNum - 1);
-            prevCellToClear->next = nullptr;
-
-            // Recursively clear any remaining unnecessary cells
-            if (prevCellToClear->value.empty()) {
-                prevCellToClear->next = nullptr;
-                clearCell(rowNum - 1);
-            }
+        cellToClear = nullptr;
+        Cell *prevCellToClear = findCell(rowNum-1);
+        Cell *tmp = prevCellToClear;
+        if (tmp == nullptr || tmp->value.empty()) {
+            tmp = tmp->next;
+            tmp = nullptr;
+            delete tmp;
+            clearCell(rowNum -1);
         }
     }
+//    if (rowNum >= totalRows) {
+//        return;
+//    }
+//
+//    Cell *cellToClear = findCell(rowNum);
+//    cellToClear->value = "";
+//
+//    if (rowNum == totalRows - 1) {
+//        // If it's the last cell, remove any unnecessary cells from the end.
+//        totalRows--;
+//        if (rowNum > 0) {
+//            Cell *prevCell = findCell(rowNum - 1);
+//            while (prevCell && prevCell->next) {
+//                if (prevCell->next->value.empty()) {
+//                    Cell *temp = prevCell->next;
+//                    prevCell->next = temp->next;
+//                    delete temp;
+//                } else {
+//                    break;
+//                }
+//            }
+//        }
+//    }
 }
 
 // Task 8
 void Column::clearAllCells() {
     // do while loop or while
-    while (rowHead != nullptr){
-        Cell *temp = rowHead;
-        rowHead = rowHead->next;
-        temp = nullptr;
+//    while (rowHead != nullptr) {
+//        Cell *temp = rowHead;
+//        temp = temp->next;
+//        temp = nullptr;
+//        delete temp;
+//    }
+//    totalRows = 0;
+//    rowHead = nullptr;
+    Cell *current = rowHead;
+    // do while loop or while
+    while (current != nullptr) {
+        Cell *temp = current;
+        current = current->next;
         delete temp;
     }
     totalRows = 0;
     rowHead = nullptr;
-    delete rowHead;
 }
 
 // ---------------------- provided functions: DO NOT MODIFY --------------------------
