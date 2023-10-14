@@ -20,16 +20,16 @@ Column::Column(const Column &c) : totalRows(c.totalRows) {
     this->prev = nullptr;
     if (c.rowHead != nullptr) {
         //deep clone the cells
-        Cell* newCloneCellStart = new Cell();
-        Cell* temp = c.rowHead;
+        Cell *newCloneCellStart = new Cell();
+        Cell *temp = c.rowHead;
         newCloneCellStart->value = c.rowHead->value;
         // Set the 'next' value to null (the loop will fill this in).
         newCloneCellStart->next = nullptr;
-        Cell* newCloneCell = newCloneCellStart;
+        Cell *newCloneCell = newCloneCellStart;
         temp = temp->next;
         while (temp != nullptr) {
             // Allocate new memory for a new 'Cell()'.
-            newCloneCell-> next = new Cell();
+            newCloneCell->next = new Cell();
             // Point to this new 'Cell()'
             newCloneCell = newCloneCell->next;
             // Copy over the value.
@@ -111,14 +111,14 @@ void Column::clearCell(int rowNum) {
     if (rowNum < totalRows - 1) {
         // 2: Cell to be cleared is not the last cell in the column
         cellToClear->value = "";
-    } else if (rowNum == totalRows -1 && rowNum >=0){
+    } else if (rowNum == totalRows - 1 && rowNum >= 0) {
         // 3: Cell to be cleared is the last cell in the column
         totalRows--;
         delete cellToClear;
-        Cell *prevCellToClear = findCell(rowNum-1);
+        Cell *prevCellToClear = findCell(rowNum - 1);
         if (prevCellToClear->value.empty()) {
             prevCellToClear->next = nullptr;
-            clearCell(rowNum -1);
+            clearCell(rowNum - 1);
         }
     }
 }
